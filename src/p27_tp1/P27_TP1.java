@@ -13,7 +13,8 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author usager
+ * @author Rostand Prud'Homme
+ * @author Antoine Tardif
  */
 public class P27_TP1 extends Application {
     
