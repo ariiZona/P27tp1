@@ -5,8 +5,17 @@
  */
 package p27_tp1;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -63,10 +72,52 @@ public class FXMLDocumentController implements Initializable {
     private ComboBox<String> cmbTri;
     @FXML
     private Button btnQuitter;
-    
+    private static final int NB_ELEVES = 25;
+    private static final int NB_EVALS = 4;
+    private static int nbEleves = 0; //Compteur du nombre d'élèves
+    private static int[][] tabNotes = new int[NB_ELEVES][NB_EVALS + 2];
+    private static int[] index = new int[NB_ELEVES];
+    //Pour accéder au tableau utiliser des constantes pour les colonnes, par exemple:
+    private static final int DA = 0;
+    private static final int EXA1 = 1;
+    String nomFic = "ficher/notes.txt";
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        try {
+            lireFichier("ficher/notes.txt");
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+ 
+       
     }    
+    public static void ecrireFichier(String nomFichier) throws IOException{
+        FileWriter fichier= new FileWriter(nomFichier);
+        PrintWriter objSortie = new PrintWriter(fichier);
+        System.out.println("");
+     
+
+ }   
+    public static void lireFichier(String nomFichier) throws FileNotFoundException, IOException{
+        //Lire le fichier
+        BufferedReader objEntree = new BufferedReader(new FileReader(nomFichier));
     
+        String ligne; //ligne du ficher
+    
+        //Lire chacune des lignes jusqu'a atteindre la fin
+        while ((ligne = objEntree.readLine()) != null) {
+        
+            //Séparer la ligne en plusieurs strings
+            String[] arrayLigne = ligne.split(" ");
+            
+            //Boucler sur la ligne
+            for (int i = 0; i < arrayLigne.length; i++) {
+                System.out.println(arrayLigne[i]);
+                }
+            
+        }
+        
+        objEntree.close();
+    }
+
 }
