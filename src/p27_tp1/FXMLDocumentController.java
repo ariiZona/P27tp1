@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 /**
  *
@@ -81,6 +82,8 @@ public class FXMLDocumentController implements Initializable {
     private static final int DA = 0;
     private static final int EXA1 = 1;
     String nomFic = "ficher/notes.txt";
+    @FXML
+    private GridPane gripNotes;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -94,7 +97,7 @@ public class FXMLDocumentController implements Initializable {
     public static void ecrireFichier(String nomFichier) throws IOException{
         FileWriter fichier= new FileWriter(nomFichier);
         PrintWriter objSortie = new PrintWriter(fichier);
-        System.out.println("");
+     
      
 
  }   
@@ -118,6 +121,30 @@ public class FXMLDocumentController implements Initializable {
         }
         
         objEntree.close();
+    }
+
+    @FXML
+    private void btnAjouterAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void btnSuprimerAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void btnActionModifier(ActionEvent event) {
+    }
+
+    @FXML
+    private void BtnActionOk(ActionEvent event) {
+    }
+
+    @FXML
+    private void btnActionAnnuler(ActionEvent event) {
+    }
+
+    @FXML
+    private void cbmActionTri(ActionEvent event) {
     }
 
 }
