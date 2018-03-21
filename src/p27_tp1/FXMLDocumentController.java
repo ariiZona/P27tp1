@@ -92,10 +92,12 @@ public class FXMLDocumentController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //Ajouter les DA dans le lsv
         for (int indEleve = 0; indEleve < NB_ELEVES; indEleve++) {
             lsvDA.getItems().addAll(Integer.toString(tabNotes[indEleve][0]));  
         }
         
+        //Ajouter les infos de l'élèves dans les txf lors d'un clic
         lsvDA.getSelectionModel().selectedItemProperty().addListener(e -> {
             int indexSelection = lsvDA.getSelectionModel().getSelectedIndex();
                 
@@ -104,27 +106,16 @@ public class FXMLDocumentController implements Initializable {
                 txfExam2.setText(Integer.toString(tabNotes[indexSelection][2]));
                 txfTP1.setText(Integer.toString(tabNotes[indexSelection][3]));
                 txfTP2.setText(Integer.toString(tabNotes[indexSelection][4]));
-//            if (lol.equals("1234501")) {
-//                txfDA.setText("1234501");
-//                txfExam1.setText("51");
-//                txfExam2.appendText("62");
-//                txfTP1.appendText("71");
-//                txfTP2.appendText("81");
-
-            
-
-        });
-   
-       
-       
+        });          
     }
     public static void ecrireFichier(String nomFichier) throws IOException{
+        /**
+         * Écrire dans un fichier
+         * @param nomFichier String contenant le chemin vers le fichier
+         */
         FileWriter fichier= new FileWriter(nomFichier);
-        PrintWriter objSortie = new PrintWriter(fichier);
-     
-     
-
- }   
+        PrintWriter objSortie = new PrintWriter(fichier); 
+    }   
     public static void lireFichier(String nomFichier) throws FileNotFoundException, IOException{
         //Lire le fichier
         BufferedReader objEntree = new BufferedReader(new FileReader(nomFichier));
@@ -142,7 +133,7 @@ public class FXMLDocumentController implements Initializable {
             }
             indLigne++;
         }
-        
+        ecrireFichier();
         objEntree.close();
     }
 
