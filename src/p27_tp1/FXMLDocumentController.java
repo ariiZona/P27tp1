@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -91,9 +92,23 @@ public class FXMLDocumentController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
- 
+        lsvDA.getItems().setAll("1234501","1234502");
+ lsvDA.getSelectionModel().selectedItemProperty().addListener(e-> {
+     String lol = lsvDA.getSelectionModel().getSelectedItem();
+     if(lol.equals("1234501")){
+         txfDA.appendText("1234501");
+         txfExam1.appendText("51");
+         txfExam2.appendText("62");
+         txfTP1.appendText("71");
+         txfTP2.appendText("81");
+         
+     }
+         
+ });
+           
        
-    }    
+       
+    }
     public static void ecrireFichier(String nomFichier) throws IOException{
         FileWriter fichier= new FileWriter(nomFichier);
         PrintWriter objSortie = new PrintWriter(fichier);
@@ -115,7 +130,7 @@ public class FXMLDocumentController implements Initializable {
             
             //Boucler sur la ligne
             for (int i = 0; i < arrayLigne.length; i++) {
-                System.out.println(arrayLigne[i]);
+                
                 }
             
         }
