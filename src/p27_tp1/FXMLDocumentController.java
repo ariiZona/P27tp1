@@ -92,17 +92,26 @@ public class FXMLDocumentController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lsvDA.getItems().setAll("1234501", "1234502");
+        for (int indEleve = 0; indEleve < NB_ELEVES; indEleve++) {
+            lsvDA.getItems().addAll(Integer.toString(tabNotes[indEleve][0]));  
+        }
+        
         lsvDA.getSelectionModel().selectedItemProperty().addListener(e -> {
-            String lol = lsvDA.getSelectionModel().getSelectedItem();
-            if (lol.equals("1234501")) {
-                txfDA.setText("1234501");
-                txfExam1.setText("51");
-                txfExam2.appendText("62");
-                txfTP1.appendText("71");
-                txfTP2.appendText("81");
+            int indexSelection = lsvDA.getSelectionModel().getSelectedIndex();
+                
+                txfDA.setText(Integer.toString(tabNotes[indexSelection][0]));
+                txfExam1.setText(Integer.toString(tabNotes[indexSelection][1]));
+                txfExam2.setText(Integer.toString(tabNotes[indexSelection][2]));
+                txfTP1.setText(Integer.toString(tabNotes[indexSelection][3]));
+                txfTP2.setText(Integer.toString(tabNotes[indexSelection][4]));
+//            if (lol.equals("1234501")) {
+//                txfDA.setText("1234501");
+//                txfExam1.setText("51");
+//                txfExam2.appendText("62");
+//                txfTP1.appendText("71");
+//                txfTP2.appendText("81");
 
-            }
+            
 
         });
    
