@@ -92,20 +92,20 @@ public class FXMLDocumentController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lsvDA.getItems().setAll("1234501","1234502");
- lsvDA.getSelectionModel().selectedItemProperty().addListener(e-> {
-     String lol = lsvDA.getSelectionModel().getSelectedItem();
-     if(lol.equals("1234501")){
-         txfDA.setText("1234501");
-         txfExam1.setText("51");
-         txfExam2.appendText("62");
-         txfTP1.appendText("71");
-         txfTP2.appendText("81");
-         
-     }
-         
- });
-           
+        lsvDA.getItems().setAll("1234501", "1234502");
+        lsvDA.getSelectionModel().selectedItemProperty().addListener(e -> {
+            String lol = lsvDA.getSelectionModel().getSelectedItem();
+            if (lol.equals("1234501")) {
+                txfDA.setText("1234501");
+                txfExam1.setText("51");
+                txfExam2.appendText("62");
+                txfTP1.appendText("71");
+                txfTP2.appendText("81");
+
+            }
+
+        });
+   
        
        
     }
@@ -121,19 +121,18 @@ public class FXMLDocumentController implements Initializable {
         BufferedReader objEntree = new BufferedReader(new FileReader(nomFichier));
     
         String ligne; //ligne du ficher
-    
+         int [][] tab2d = new int [25][6];
         //Lire chacune des lignes jusqu'a atteindre la fin
         while ((ligne = objEntree.readLine()) != null) {
-        
-            //Séparer la ligne en plusieurs strings
-            String[] arrayLigne = ligne.split(" ");
+            for (int  = 0; i < tabNotes-1; i++) {
+                tab2d[i] = ligne.split(" ");
+                System.out.println(i);
+            }
             
-            //Boucler sur la ligne
-            for (int i = 0; i < arrayLigne.length; i++) {
-                
+         
                 }
             
-        }
+        
         
         objEntree.close();
     }
