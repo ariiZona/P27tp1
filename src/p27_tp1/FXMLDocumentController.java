@@ -96,8 +96,8 @@ public class FXMLDocumentController implements Initializable {
  lsvDA.getSelectionModel().selectedItemProperty().addListener(e-> {
      String lol = lsvDA.getSelectionModel().getSelectedItem();
      if(lol.equals("1234501")){
-         txfDA.appendText("1234501");
-         txfExam1.appendText("51");
+         txfDA.setText("1234501");
+         txfExam1.setText("51");
          txfExam2.appendText("62");
          txfTP1.appendText("71");
          txfTP2.appendText("81");
