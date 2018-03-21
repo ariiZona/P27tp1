@@ -121,18 +121,14 @@ public class FXMLDocumentController implements Initializable {
         BufferedReader objEntree = new BufferedReader(new FileReader(nomFichier));
     
         String ligne; //ligne du ficher
-         int [][] tab2d = new int [25][6];
+        String[][] tab2d = new String[25][6];
+        int indLigne = 0;
         //Lire chacune des lignes jusqu'a atteindre la fin
         while ((ligne = objEntree.readLine()) != null) {
-            for (int  = 0; i < tabNotes-1; i++) {
-                tab2d[i] = ligne.split(" ");
-                System.out.println(i);
-            }
-            
-         
-                }
-            
-        
+                tab2d[indLigne] = ligne.split(" ");
+                System.out.println(tab2d[indLigne][0]);
+                indLigne++;
+        }
         
         objEntree.close();
     }
