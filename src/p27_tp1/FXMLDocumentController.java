@@ -133,7 +133,6 @@ public class FXMLDocumentController implements Initializable {
             }
             indLigne++;
         }
-        ecrireFichier();
         objEntree.close();
     }
 
