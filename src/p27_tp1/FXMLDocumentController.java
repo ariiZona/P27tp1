@@ -12,21 +12,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import static p27_tp1.Utilitaires.AjouterLigneTab2D;
+import static p27_tp1.Utilitaires.CalculerNoteFinale;
+import static p27_tp1.Utilitaires.ModifierLigneTab2D;
+import static p27_tp1.Utilitaires.SupprimerLigneTab2D;
+import static p27_tp1.Utilitaires.maxEval;
+import static p27_tp1.Utilitaires.minEval;
+import static p27_tp1.Utilitaires.moyenneEval;
 
 /**
  *
@@ -82,9 +95,8 @@ public class FXMLDocumentController implements Initializable {
     //Pour accéder au tableau utiliser des constantes pour les colonnes, par exemple:
     private static final int DA = 0;
     private static final int EXA1 = 1;
+    private static boolean modification = false;
     String nomFic = "ficher/notes.txt";
-    @FXML
-    private GridPane gripNotes;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -100,21 +112,35 @@ public class FXMLDocumentController implements Initializable {
         //Ajouter les infos de l'élèves dans les txf lors d'un clic
         lsvDA.getSelectionModel().selectedItemProperty().addListener(e -> {
             int indexSelection = lsvDA.getSelectionModel().getSelectedIndex();
-                
-                txfDA.setText(Integer.toString(tabNotes[indexSelection][0]));
-                txfExam1.setText(Integer.toString(tabNotes[indexSelection][1]));
-                txfExam2.setText(Integer.toString(tabNotes[indexSelection][2]));
-                txfTP1.setText(Integer.toString(tabNotes[indexSelection][3]));
-                txfTP2.setText(Integer.toString(tabNotes[indexSelection][4]));
-        });          
+
+            txfDA.setText(Integer.toString(tabNotes[indexSelection][0]));
+            txfExam1.setText(Integer.toString(tabNotes[indexSelection][1]));
+            txfExam2.setText(Integer.toString(tabNotes[indexSelection][2]));
+            txfTP1.setText(Integer.toString(tabNotes[indexSelection][3]));
+            txfTP2.setText(Integer.toString(tabNotes[indexSelection][4]));
+        });
+        
+        nbEleves = tabNotes.length;
+        System.out.println(nbEleves);
     }
     public static void ecrireFichier(String nomFichier) throws IOException{
         /**
          * Écrire dans un fichier
          * @param nomFichier String contenant le chemin vers le fichier
          */
-        FileWriter fichier= new FileWriter(nomFichier);
-        PrintWriter objSortie = new PrintWriter(fichier); 
+        
+        //Ouvrir le fichier en écriture
+        PrintWriter objSortie = new PrintWriter(new FileWriter(nomFichier));
+        
+        //Boucler sur le tableau pour ajouter les infos dans le fichier
+        for (int i = 0; i < nbEleves; i++) {
+            objSortie.println(tabNotes[i][0] + " " + tabNotes[i][1] + " " +
+                               tabNotes[i][2] + " " + tabNotes[i][3] + " " +
+                               tabNotes[i][4] + " " + tabNotes[i][5]);
+        }
+        
+        //Fermer le fichier
+        objSortie.close();
     }   
     public static void lireFichier(String nomFichier) throws FileNotFoundException, IOException{
         //Lire le fichier
@@ -138,26 +164,143 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void btnAjouterAction(ActionEvent event) {
+        modification = false;
+        
+        //Vérifier si le max d'élèves est atteint
+        if (nbEleves < NB_ELEVES) {
+            txfDA.setEditable(true);
+            txfExam1.setEditable(true);
+            txfExam2.setEditable(true);
+            txfTP1.setEditable(true);
+            txfTP2.setEditable(true);
+            btnOK.setDisable(false);
+            btnAnnuler.setDisable(false);
+        } else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Attention!");
+            alert.setContentText("Le maximum d'élèves est déjà atteint (25).");
+            alert.showAndWait();
+        }
     }
 
     @FXML
-    private void btnSuprimerAction(ActionEvent event) {
+    private void btnSupprimerAction(ActionEvent event) {
+        
+        if (nbEleves > 0) {
+            //Stocker l'index du DA sélectionné
+            int indexSelection = lsvDA.getSelectionModel().getSelectedIndex();
+            
+            //Supprimer l'élève
+            nbEleves = SupprimerLigneTab2D(tabNotes, indexSelection, nbEleves);
+            
+            //Enlever le DA du lsv
+            lsvDA.getItems().remove(indexSelection);
+            
+            //Décrémenter le nombre d'éleves
+            nbEleves--;
+        }
     }
 
     @FXML
-    private void btnActionModifier(ActionEvent event) {
+    private void btnModifierAction(ActionEvent event) {
+        modification = true;
+        
+        txfDA.setEditable(true);
+        txfExam1.setEditable(true);
+        txfExam2.setEditable(true);
+        txfTP1.setEditable(true);
+        txfTP2.setEditable(true);
+        btnOK.setDisable(false);
+        btnAnnuler.setDisable(false);
     }
 
     @FXML
-    private void BtnActionOk(ActionEvent event) {
+    private void btnOKAction(ActionEvent event) {
+        if (modification) {
+            //Contient les infos à modifier
+            int[] tabLigne = new int[6];
+            
+            //Ajouter les infos au tableau temporaire
+            tabLigne[0] = Integer.parseInt(txfDA.getText());
+            tabLigne[1] = Integer.parseInt(txfExam1.getText());
+            tabLigne[2] = Integer.parseInt(txfExam2.getText());
+            tabLigne[3] = Integer.parseInt(txfTP1.getText());
+            tabLigne[4] = Integer.parseInt(txfTP2.getText());
+            //Calculer la note finale
+            tabLigne[5] = CalculerNoteFinale(tabLigne);
+            
+            //Stocker l'index du DA sélectionné
+            int indexSelection = lsvDA.getSelectionModel().getSelectedIndex();
+            
+            //Modifier le tab à l'index passé en paramètre
+            ModifierLigneTab2D(tabNotes, tabLigne, indexSelection);
+            
+            //Mettre à jour le DA dans le ListView
+            lsvDA.getItems().set(indexSelection, Integer.toString(tabNotes[indexSelection][0]));  
+            
+        } else {
+            //Contient les infos à ajouter
+            int[] tabLigne = new int[6];
+            
+            //Ajouter les infos au tableau temporaire
+            tabLigne[0] = Integer.parseInt(txfDA.getText());
+            tabLigne[1] = Integer.parseInt(txfExam1.getText());
+            tabLigne[2] = Integer.parseInt(txfExam2.getText());
+            tabLigne[3] = Integer.parseInt(txfTP1.getText());
+            tabLigne[4] = Integer.parseInt(txfTP2.getText());
+            //Calculer la note finale
+            tabLigne[5] = CalculerNoteFinale(tabLigne);
+            
+            //Ajouter les infos à la fin du tableau
+            nbEleves = AjouterLigneTab2D(tabNotes, tabLigne, nbEleves);
+            
+            //Incrémenter le nombre d'élèves
+            nbEleves++;
+            
+            //Ajouter au lsv
+            lsvDA.getItems().addAll(Integer.toString(tabNotes[nbEleves - 1][0]));
+        }
+        
+        txfDA.setEditable(false);
+        txfExam1.setEditable(false);
+        txfExam2.setEditable(false);
+        txfTP1.setEditable(false);
+        txfTP2.setEditable(false);
+        btnOK.setDisable(true);
+        btnAnnuler.setDisable(true);
     }
 
     @FXML
-    private void btnActionAnnuler(ActionEvent event) {
+    private void btnAnnulerAction(ActionEvent event) {
+        txfDA.setEditable(false);
+        txfExam1.setEditable(false);
+        txfExam2.setEditable(false);
+        txfTP1.setEditable(false);
+        txfTP2.setEditable(false);
+        btnOK.setDisable(true);
+        btnAnnuler.setDisable(true);
     }
 
     @FXML
-    private void cbmActionTri(ActionEvent event) {
-    }
+    private void btnQuitterAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("CA TE TENTE TU DE SAUVGARDER LE BIG ?");
+        alert.setContentText("TU SAVE TU OU PAS ?");
+        ButtonType buttonTypeOK = new ButtonType("Yes");
+        ButtonType buttonTypeCancel = new ButtonType("No", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOK, buttonTypeCancel);
 
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOK) {
+            try {
+                ecrireFichier("notes.txt");
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Platform.exit();
+        } else {
+            Platform.exit();
+        }
+    }
 }
+

@@ -23,7 +23,8 @@ public class P27_TP1 extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
-        
+        stage.setTitle("Note du groupe");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
